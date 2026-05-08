@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>វិញ្ញាសាគណិតវិទ្យា - វិទ្យាល័យ ប៊ុនរ៉ានី ហ៊ុនសែនចន្ទ្រា</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;700&family=Moul&display=swap');
+
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #d93025;
+            --school-color: #1557b0;
+            --bg-light: #f4f7f9;
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-light);
+            /* Background ក្រឡាដេការ */
+            background-image: 
+                linear-gradient(rgba(26, 115, 232, 0.05) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, rgba(26, 115, 232, 0.05) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+            background-attachment: fixed;
+        }
+
+        /* Watermark */
+        body::before {
+            content: "វិទ្យាល័យ ប៊ុនរ៉ានី ហ៊ុនសែនចន្ទ្រា - ភូលូ ពីរផែ";
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 4rem;
+            color: rgba(26, 115, 232, 0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: -1;
+            font-family: 'Moul', serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            border: 2px solid var(--school-color);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--school-color);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+        }
+
+        .school-name { font-family: 'Moul', cursive; color: var(--school-color); font-size: 1.3em; }
+        .exam-title { font-family: 'Moul', cursive; color: var(--secondary-color); font-size: 1.5em; margin: 10px 0; }
+        .author-name { font-weight: bold; color: #555; }
+
+        /* ប្រអប់ណែនាំការដាក់ពិន្ទុ */
+        .instruction-box {
+            background-color: #fff9c4;
+            border-left: 6px solid #fbc02d;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        .instruction-box h4 { margin: 0 0 5px 0; color: #856404; }
+        .instruction-box ul { margin: 0; padding-left: 20px; font-size: 0.95em; }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        .info-group label { display: block; font-weight: bold; font-size: 0.9em; margin-bottom: 5px; }
+        .info-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+
+        .question-card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .question-text { font-weight: bold; margin-bottom: 15px; color: #333; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        label { 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        label:hover { background-color: #f1f8e9; }
+        .skip-label { font-style: italic; color: #888; border: 1px dashed #ccc; text-align: center; }
+
+        .btn-submit {
+            background: var(--school-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Kantumruy Pro';
+        }
+        .btn-submit:hover { background: #000; }
+
+        #result-area {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border: 3px solid var(--school-color);
+            border-radius: 15px;
+            text-align: center;
+            background: white;
+        }
+        .score-num { font-size: 3em; font-weight: bold; color: var(--secondary-color); }
+
+        @media (max-width: 600px) {
+            .student-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="school-name">វិទ្យាល័យ ប៊ុនរ៉ានី ហ៊ុនសែនចន្ទ្រា</div>
+        <div class="exam-title">វិញ្ញាសាគណិតវិទ្យា ថ្នាក់ទី៩</div>
+        <div class="author-name">រៀបចំដោយលោកគ្រូ៖ ភូលូ ពីរផែ</div>
+    </header>
+
+    <!-- ការណែនាំពិន្ទុ -->
+    <div class="instruction-box">
+        <h4>📝 របៀបដាក់ពិន្ទុ៖</h4>
+        <ul>
+            <li>ឆ្លើយត្រូវទទួលបាន <strong>+២ ពិន្ទុ</strong></li>
+            <li>ឆ្លើយខុសត្រូវដក <strong>-១ ពិន្ទុ</strong></li>
+            <li>រំលង ឬមិនឆ្លើយ ទទួលបាន <strong>០ ពិន្ទុ</strong></li>
+        </ul>
+    </div>
+
+    <div class="student-info">
+        <div class="info-group">
+            <label>ឈ្មោះសិស្ស</label>
+            <input type="text" id="name" placeholder="នាមត្រកូល និងនាមខ្លួន">
+        </div>
+        <div class="info-group">
+            <label>ថ្នាក់ទី</label>
+            <input type="text" id="grade" placeholder="៩...">
+        </div>
+        <div class="info-group">
+            <label>លេខរៀង</label>
+            <input type="number" id="no" placeholder="00">
+        </div>
+    </div>
+
+    <form id="quizForm">
+        <!-- សំណួរ -->
+        <div class="question-card">
+            <div class="question-text">១. តើចំនួនណាជាចំនួនអសនិទាន?</div>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> ក. √9</label>
+                <label><input type="radio" name="q1" value="correct"> ខ. √5</label>
+                <label><input type="radio" name="q1" value="wrong"> គ. 3.14</label>
+                <label class="skip-label"><input type="radio" name="q1" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">២. សម្រួលកន្សោម √50</div>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> ក. 2√5</label>
+                <label><input type="radio" name="q2" value="correct"> ខ. 5√2</label>
+                <label><input type="radio" name="q2" value="wrong"> គ. 10√2</label>
+                <label class="skip-label"><input type="radio" name="q2" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៣. គណនា √27 + √12</div>
+            <div class="options">
+                <label><input type="radio" name="q3" value="correct"> ក. 5√3</label>
+                <label><input type="radio" name="q3" value="wrong"> ខ. √39</label>
+                <label><input type="radio" name="q3" value="wrong"> គ. 6√3</label>
+                <label class="skip-label"><input type="radio" name="q3" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៤. បំបាត់រ៉ាឌីកាល់ពីភាគបែងនៃ ២/√២</div>
+            <div class="options">
+                <label><input type="radio" name="q4" value="correct"> ក. √2</label>
+                <label><input type="radio" name="q4" value="wrong"> ខ. 2√2</label>
+                <label><input type="radio" name="q4" value="wrong"> គ. 1</label>
+                <label class="skip-label"><input type="radio" name="q4" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៥. តម្លៃនៃ (√13)² គឺ៖</div>
+            <div class="options">
+                <label><input type="radio" name="q5" value="wrong"> ក. √169</label>
+                <label><input type="radio" name="q5" value="correct"> ខ. 13</label>
+                <label><input type="radio" name="q5" value="wrong"> គ. 169</label>
+                <label class="skip-label"><input type="radio" name="q5" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៦. គណនា √2 × √32</div>
+            <div class="options">
+                <label><input type="radio" name="q6" value="correct"> ក. 8</label>
+                <label><input type="radio" name="q6" value="wrong"> ខ. 4</label>
+                <label><input type="radio" name="q6" value="wrong"> គ. 16</label>
+                <label class="skip-label"><input type="radio" name="q6" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៧. តើចំនួន π ជាចំនួនប្រភេទអ្វី?</div>
+            <div class="options">
+                <label><input type="radio" name="q7" value="correct"> ក. ចំនួនអសនិទាន</label>
+                <label><input type="radio" name="q7" value="wrong"> ខ. ចំនួនសនិទាន</label>
+                <label><input type="radio" name="q7" value="wrong"> គ. ចំនួនគត់</label>
+                <label class="skip-label"><input type="radio" name="q7" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៨. សម្រួលកន្សោម (√3 - 1)(√3 + 1)</div>
+            <div class="options">
+                <label><input type="radio" name="q8" value="wrong"> ក. 1</label>
+                <label><input type="radio" name="q8" value="correct"> ខ. 2</label>
+                <label><input type="radio" name="q8" value="wrong"> គ. 4</label>
+                <label class="skip-label"><input type="radio" name="q8" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">៩. ប្រៀបធៀប 2√3 និង 3√2</div>
+            <div class="options">
+                <label><input type="radio" name="q9" value="wrong"> ក. 2√3 > 3√2</label>
+                <label><input type="radio" name="q9" value="correct"> ខ. 2√3 < 3√2</label>
+                <label><input type="radio" name="q9" value="wrong"> គ. 2√3 = 3√2</label>
+                <label class="skip-label"><input type="radio" name="q9" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">១០. ចំនួនអសនិទាន គឺជាចំនួនដែល៖</div>
+            <div class="options">
+                <label><input type="radio" name="q10" value="wrong"> ក. អាចសរសេរជាប្រភាគបាន</label>
+                <label><input type="radio" name="q10" value="correct"> ខ. មិនអាចសរសេរជាប្រភាគបាន</label>
+                <label><input type="radio" name="q10" value="wrong"> គ. ជាចំនួនសូន្យ</label>
+                <label class="skip-label"><input type="radio" name="q10" value="skip"> រំលងសំណួរនេះ</label>
+            </div>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="calculateScore()">បញ្ជូនចម្លើយ</button>
+    </form>
+
+    <div id="result-area">
+        <h2 style="color: var(--school-color);">លទ្ធផលនៃការប្រឡង</h2>
+        <p id="student-name-res"></p>
+        <div class="score-num" id="score-res">0</div>
+        <p id="stats-res"></p>
+        <hr>
+        <p style="font-size: 0.9em;">វិទ្យាល័យ ប៊ុនរ៉ានី ហ៊ុនសែនចន្ទ្រា | រៀបចំដោយ៖ ភូលូ ពីរផែ</p>
+        <button onclick="window.print()" style="padding: 5px 15px; cursor: pointer;">បោះពុម្ពលទ្ធផល</button>
+    </div>
+</div>
+
+<script>
+    function calculateScore() {
+        const name = document.getElementById('name').value || "សិស្សមិនស្គាល់ឈ្មោះ";
+        const grade = document.getElementById('grade').value || "---";
+        const no = document.getElementById('no').value || "---";
+
+        let totalScore = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let skipCount = 0;
+
+        for (let i = 1; i <= 10; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            
+            if (selected) {
+                if (selected.value === "correct") {
+                    totalScore += 2;
+                    correctCount++;
+                } else if (selected.value === "wrong") {
+                    totalScore -= 1;
+                    wrongCount++;
+                } else {
+                    skipCount++;
+                }
+            } else {
+                skipCount++;
+            }
+        }
+
+        // ការពារពិន្ទុអវិជ្ជមាន (Optional)
+        if (totalScore < 0) totalScore = 0;
+
+        document.getElementById('quizForm').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+        document.getElementById('student-name-res').innerHTML = `សិស្ស៖ <strong>${name}</strong> | ថ្នាក់៖ <strong>${grade}</strong> | លេខ៖ <strong>${no}</strong>`;
+        document.getElementById('score-res').innerText = totalScore + " / ២០";
+        document.getElementById('stats-res').innerHTML = `ត្រូវ៖ <span style="color:green">${correctCount}</span> | ខុស៖ <span style="color:red">${wrongCount}</span> | រំលង៖ <span style="color:orange">${skipCount}</span>`;
+        
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
